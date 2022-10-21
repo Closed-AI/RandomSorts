@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RandomSorts.Sorts
+﻿namespace RandomSorts.Sorts
 {
     internal class BubbleSorter : ISorter
     {
         public void Sort(List<int> nums)
         {
-            for (int i = 0; i + 1 < nums.Count; ++i)
+            for (int i = 0; i + 1 < nums.Count; i++)
             {
-                for (int j = 0; j + 1 < nums.Count - i; ++j)
+                for (int j = 0; j + 1 < nums.Count - i; j++)
                 {
                     if (nums[j + 1] < nums[j])
                     {

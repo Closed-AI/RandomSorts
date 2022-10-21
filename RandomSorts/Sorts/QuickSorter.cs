@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RandomSorts.Sorts
+﻿namespace RandomSorts.Sorts
 {
     internal class QuickSorter : ISorter
     {
@@ -32,12 +25,12 @@ namespace RandomSorts.Sorts
             int x = nums[r];
             int less = l;
 
-            for (int i = l; i < r; ++i)
+            for (int i = l; i < r; i++)
             {
                 if (nums[i] <= x)
                 {
                     (nums[i], nums[less]) = (nums[less], nums[i]);
-                    ++less;
+                    less++;
                 }
             }
             (nums[less], nums[r]) = (nums[r], nums[less]);

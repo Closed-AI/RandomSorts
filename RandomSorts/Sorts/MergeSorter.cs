@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RandomSorts.Sorts
+﻿namespace RandomSorts.Sorts
 {
     internal class MergeSorter : ISorter
     {
@@ -33,16 +25,16 @@ namespace RandomSorts.Sorts
                     if (j > r || (i <= m && values[i] < values[j]))
                     {
                         buff[k] = values[i];
-                        ++i;
+                        i++;
                     }
                     else
                     {
                         buff[k] = values[j];
-                        ++j;
+                        j++;
                     }
-                    ++k;
+                    k++;
                 }
-                for (int i = l; i <= r; ++i)
+                for (int i = l; i <= r; i++)
                 {
                     values[i] = buff[i];
                 }

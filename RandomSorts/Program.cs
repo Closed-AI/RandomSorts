@@ -1,11 +1,7 @@
 ﻿using System.Text.Json;
 using System.Configuration;
-using System.Collections.Specialized;
 using RandomSorts.Sorts;
-using System.Text.Json.Serialization;
-using System.Net;
 using System.Text;
-using System.Net.Http.Json;
 
 namespace RandomSorts
 {
@@ -15,11 +11,6 @@ namespace RandomSorts
 
         static void Main()
         {
-            MainAsync().GetAwaiter().GetResult();
-        }
-
-        static async Task MainAsync()
-        {
             // генерация списка
             List<int> nums = new List<int>();
 
@@ -27,13 +18,14 @@ namespace RandomSorts
 
             int size = rand.Next(20, 101);
 
+            StringBuilder stringBuilder = new StringBuilder(1000);
             // вывод сгенерированного списка
-            Console.WriteLine("Сгенерированная последовательность:\n");
+            stringBuilder.Append("Сгенерированная последовательность:\n");
 
             for (int i = 0; i < size; ++i)
             {
                 nums.Add(rand.Next(-100, 101));
-                Console.Write(nums[i] + " ");
+                stringBuilder.Append($"{nums[i]} ");
             }
 
             // выбор алгоритма и сортировка списка
@@ -41,8 +33,8 @@ namespace RandomSorts
 
             var sorterNumder = rand.Next(0, 6);
 
-                 if (sorterNumder == 0) sorter = new BubbleSorter();
-            else if (sorterNumder == 1) sorter = new InsertionSorter();
+            // если  sorterNumber == 0 sorter остаётся BubbleSorter - ом
+            if (sorterNumder == 1) sorter = new InsertionSorter();
             else if (sorterNumder == 2) sorter = new SelectionSorter();
             else if (sorterNumder == 3) sorter = new QuickSorter();
             else if (sorterNumder == 4) sorter = new MergeSorter();
@@ -51,39 +43,30 @@ namespace RandomSorts
             sorter.Sort(nums);
 
             // вывод отсортированного списка
-            Console.WriteLine("\n\nОтсортированная последовательность:\n");
+            stringBuilder.Append("\n\nОтсортированная последовательность:\n");
 
             foreach (var num in nums)
-                Console.Write(num + " ");
-            
+                stringBuilder.Append($"{num} ");
+
+            Console.WriteLine(stringBuilder.ToString());
+
             // отправка списка на сервер в формате json
             string json = JsonSerializer.Serialize(nums);
-            await PostRequestAsync(json);
+
+            PostRequestAsync(json).Wait();
         }
 
         private static async Task PostRequestAsync(string requestData)
         {
-            WebRequest request = WebRequest.Create(ConfigurationManager.AppSettings[CONFIG_URL_PARAMETR_NAME]);
-            request.Method = "POST";
-            byte[] byteArray = Encoding.UTF8.GetBytes(requestData);
-            request.ContentType = "application/json";
-            request.ContentLength = byteArray.Length;
-
-            using (Stream dataStream = request.GetRequestStream())
+            using (var client = new HttpClient())
             {
-                dataStream.Write(byteArray, 0, byteArray.Length);
+                var url = ConfigurationManager.AppSettings[CONFIG_URL_PARAMETR_NAME];
+                var content = new StringContent(requestData, Encoding.UTF8, "application/json");
+                var result = await client.PostAsync(url, content);
+                string resultContent = await result.Content.ReadAsStringAsync();
+                //ответ сервера
+                //Console.WriteLine(resultContent);
             }
-
-            WebResponse response = await request.GetResponseAsync();
-            using (Stream stream = response.GetResponseStream())
-            {
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    // ответ сервера
-                    //Console.WriteLine(reader.ReadToEnd());
-                }
-            }
-            response.Close();
         }
     }
 }

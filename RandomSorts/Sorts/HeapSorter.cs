@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RandomSorts.Sorts
+﻿namespace RandomSorts.Sorts
 {
     internal class HeapSorter : ISorter
     {
@@ -12,10 +6,10 @@ namespace RandomSorts.Sorts
         {
             int n = nums.Count;
 
-            for (int i = n / 2 - 1; i >= 0; --i)
+            for (int i = n / 2 - 1; i >= 0; i--)
                 heapify(nums, n, i);
 
-            for (int i = n - 1; i >= 0; --i)
+            for (int i = n - 1; i >= 0; i--)
             {
                 (nums[0], nums[i]) = (nums[i], nums[0]);
                 heapify(nums, i, 0);
